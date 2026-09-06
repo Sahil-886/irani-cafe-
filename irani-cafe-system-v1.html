@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Irani Café — Café &amp; Staff Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --wall:#c8dacb;          /* eau-de-nil café wall */
+  --wall-deep:#a9c3ae;
+  --ink:#16281f;           /* bottle-green black */
+  --green:#1f4433;         /* signboard green */
+  --green-soft:#2f5a45;
+  --enamel:#f2ede0;        /* enamel panel */
+  --paper:#fbf8f0;         /* bill paper */
+  --brass:#a8781f;
+  --brass-lt:#d3a544;
+  --oxblood:#8c2f26;
+  --tile:#1a241e;
+  --line:rgba(22,40,31,.16);
+  --serif:'Bodoni Moda', Georgia, 'Times New Roman', serif;
+  --sans:'Karla', 'Trebuchet MS', system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--wall);
+  -webkit-font-smoothing:antialiased;
+  font-size:16px;
+  line-height:1.55;
+}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:0;background:none;color:inherit}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+table{border-collapse:collapse;width:100%}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- intro page ---------- */
+.wall{
+  min-height:100vh;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%),
+    var(--wall);
+}
+.hero{
+  max-width:980px;margin:0 auto;padding:72px 24px 48px;text-align:center;
+}
+.sign{
+  display:inline-block;position:relative;
+  background:var(--green);
+  color:var(--enamel);
+  padding:34px 56px 28px;
+  border:3px solid var(--brass);
+  box-shadow:0 0 0 9px var(--green), 0 0 0 11px rgba(22,40,31,.25), 0 22px 40px -18px rgba(22,40,31,.6);
+  transform:rotate(-.5deg);
+}
+.sign::before,.sign::after{
+  content:"";position:absolute;top:12px;width:9px;height:9px;border-radius:50%;
+  background:var(--brass-lt);box-shadow:inset 0 -1px 2px rgba(0,0,0,.5);
+}
+.sign::before{left:14px} .sign::after{right:14px}
+.sign h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(38px,7vw,72px);line-height:.95;margin:0;letter-spacing:.01em;
+}
+.sign .estd{
+  margin:10px 0 0;font-size:13px;letter-spacing:.22em;color:var(--brass-lt);
+}
+.sign .rule{height:1px;background:var(--brass);opacity:.55;margin:14px auto 0;width:60%}
+@keyframes lamp{0%{opacity:.15}10%{opacity:1}17%{opacity:.3}26%{opacity:1}34%{opacity:.55}42%{opacity:1}100%{opacity:1}}
+.sign{animation:lamp 1.2s ease-out both}
+@media (prefers-reduced-motion:reduce){.sign{animation:none}}
+
+.lede{
+  font-family:var(--serif);font-size:clamp(19px,2.4vw,26px);line-height:1.45;
+  max-width:23ch;margin:34px auto 6px;
+}
+.sub{max-width:52ch;margin:0 auto 30px;color:var(--green-soft);font-size:16px}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{
+  padding:13px 26px;border-radius:2px;font-weight:700;letter-spacing:.02em;
+  transition:transform .12s ease, background .15s ease;
+}
+.btn:active{transform:translateY(1px)}
+.btn-solid{background:var(--green);color:var(--enamel);border:2px solid var(--green)}
+.btn-solid:hover{background:var(--ink)}
+.btn-line{background:transparent;color:var(--green);border:2px solid var(--green)}
+.btn-line:hover{background:rgba(31,68,51,.09)}
+
+.tiles{
+  height:34px;
+  background:conic-gradient(var(--tile) 0 25%, var(--enamel) 0 50%, var(--tile) 0 75%, var(--enamel) 0);
+  background-size:34px 34px;
+  border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);
+  margin-top:56px;
+}
+
+/* register vs system */
+.compare{background:var(--enamel);padding:60px 24px}
+.compare-in{max-width:980px;margin:0 auto}
+.compare h2{
+  font-family:var(--serif);font-size:clamp(24px,3.4vw,36px);margin:0 0 6px;font-weight:600;
+}
+.compare .note{margin:0 0 30px;color:var(--green-soft);max-width:60ch}
+.swap{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--ink)}
+.swap-head{
+  padding:12px 18px;font-weight:700;background:var(--green);color:var(--enamel);
+}
+.swap-head.b{background:var(--ink)}
+.swap-cell{padding:16px 18px;border-top:1px solid var(--line);font-size:15.5px}
+.swap-cell.a{background:rgba(140,47,38,.05)}
+.swap-cell.b{background:var(--paper);border-left:1px solid var(--line)}
+.swap-head.b, .swap-cell.b{border-left:1px solid rgba(0,0,0,.25)}
+.quote{font-style:italic;color:var(--oxblood)}
+.who{display:block;font-style:normal;font-size:12.5px;color:var(--green-soft);margin-top:5px;letter-spacing:.04em}
+
+/* facts strip */
+.facts{background:var(--green);color:var(--enamel);padding:34px 24px}
+.facts-in{max-width:980px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.fact b{display:block;font-family:var(--serif);font-size:34px;line-height:1;font-weight:600}
+.fact span{font-size:13.5px;color:rgba(242,237,224,.75)}
+
+/* module list */
+.mods{background:var(--paper);padding:56px 24px}
+.mods-in{max-width:980px;margin:0 auto}
+.mods h2{font-family:var(--serif);font-size:clamp(24px,3.4vw,36px);margin:0 0 26px;font-weight:600}
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.mod{background:var(--paper);padding:20px}
+.mod h3{margin:0 0 6px;font-size:16.5px;font-weight:700}
+.mod p{margin:0;font-size:14.5px;color:var(--green-soft)}
+
+/* footer */
+.colophon{background:var(--ink);color:rgba(242,237,224,.8);padding:34px 24px;font-size:14px}
+.colophon-in{max-width:980px;margin:0 auto;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.colophon strong{color:var(--enamel);font-weight:600}
+
+/* ---------- sign in ---------- */
+.gate{position:fixed;inset:0;background:rgba(22,40,31,.78);display:grid;place-items:center;padding:20px;z-index:60}
+.gate-card{background:var(--enamel);width:min(400px,100%);padding:30px;border:2px solid var(--ink);box-shadow:0 30px 60px -20px rgba(0,0,0,.6)}
+.gate-card h2{font-family:var(--serif);margin:0 0 4px;font-size:26px;font-weight:600}
+.gate-card p.hint{margin:0 0 20px;font-size:13.5px;color:var(--green-soft)}
+.field{display:block;margin-bottom:14px}
+.field span{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
+.field input,.field select{
+  width:100%;padding:10px 12px;border:1.5px solid var(--ink);background:var(--paper);
+  font-family:var(--sans);font-size:15px;color:var(--ink);border-radius:2px;
+}
+.gate-err{color:var(--oxblood);font-size:13.5px;margin:0 0 12px;font-weight:600}
+
+/* ---------- app shell ---------- */
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh;background:var(--paper)}
+.side{background:var(--green);color:var(--enamel);padding:22px 0;display:flex;flex-direction:column}
+.side-brand{padding:0 20px 20px;border-bottom:1px solid rgba(242,237,224,.18)}
+.side-brand b{font-family:var(--serif);font-size:23px;display:block;line-height:1.1;font-weight:600}
+.side-brand span{font-size:11.5px;letter-spacing:.18em;color:var(--brass-lt)}
+.nav{padding:14px 12px;display:flex;flex-direction:column;gap:2px}
+.nav button{
+  text-align:left;padding:10px 14px;border-radius:2px;color:rgba(242,237,224,.82);
+  font-size:15px;border-left:3px solid transparent;
+}
+.nav button:hover{background:rgba(242,237,224,.09);color:var(--enamel)}
+.nav button.on{background:rgba(242,237,224,.14);color:var(--enamel);border-left-color:var(--brass-lt);font-weight:700}
+.side-foot{margin-top:auto;padding:16px 20px;font-size:12.5px;color:rgba(242,237,224,.6)}
+.side-foot button{text-decoration:underline;color:var(--brass-lt);padding:0}
+
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:14px 26px;border-bottom:1px solid var(--line);background:var(--enamel);flex-wrap:wrap;
+}
+.topbar h2{font-family:var(--serif);font-size:23px;margin:0;font-weight:600}
+.who-chip{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--green-soft)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--green);color:var(--enamel);display:grid;place-items:center;font-weight:700;font-size:13px}
+.view{padding:24px 26px 40px;flex:1}
+
+/* counter */
+.counter{display:grid;grid-template-columns:1fr 336px;gap:22px;align-items:start}
+.panel{background:var(--paper);border:1px solid var(--line)}
+.panel-h{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.panel-h h3{margin:0;font-size:15px;font-weight:700}
+.search{padding:8px 11px;border:1.5px solid var(--line);background:var(--enamel);font-family:var(--sans);font-size:14px;border-radius:2px;width:170px}
+.cats{display:flex;gap:6px;flex-wrap:wrap;padding:12px 16px 0}
+.cat{padding:6px 13px;border:1.5px solid var(--line);font-size:13.5px;border-radius:2px;background:var(--enamel)}
+.cat.on{background:var(--green);color:var(--enamel);border-color:var(--green);font-weight:700}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px;padding:14px 16px 18px}
+.dish{
+  border:1.5px solid var(--line);background:var(--enamel);padding:12px;text-align:left;border-radius:2px;
+  display:flex;flex-direction:column;gap:5px;transition:border-color .12s,background .12s;
+}
+.dish:hover{border-color:var(--green);background:#fff}
+.dish b{font-size:14.5px;font-weight:700;line-height:1.25}
+.dish span{font-size:13px;color:var(--green-soft)}
+.dish em{font-style:normal;font-weight:700;font-size:15px;color:var(--oxblood)}
+
+.bill{position:sticky;top:16px;background:var(--paper);border:1px solid var(--ink)}
+.bill-h{background:var(--ink);color:var(--enamel);padding:11px 15px;display:flex;justify-content:space-between;font-size:13.5px}
+.bill-lines{padding:8px 15px;max-height:290px;overflow:auto}
+.empty{padding:34px 8px;text-align:center;color:var(--green-soft);font-size:14px}
+.line{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.line b{font-size:14px;font-weight:600;display:block}
+.line small{color:var(--green-soft);font-size:12.5px}
+.qty{display:flex;align-items:center;gap:5px}
+.qty button{width:23px;height:23px;border:1.5px solid var(--line);border-radius:2px;line-height:1;font-weight:700;background:var(--enamel)}
+.qty button:hover{border-color:var(--green)}
+.qty span{min-width:18px;text-align:center;font-weight:700;font-size:14px}
+.line-amt{font-weight:700;min-width:56px;text-align:right;font-size:14px}
+.totals{padding:12px 15px;border-top:1px solid var(--ink);font-size:14px}
+.totals div{display:flex;justify-content:space-between;padding:3px 0}
+.totals .grand{font-weight:700;font-size:19px;border-top:1px solid var(--line);margin-top:7px;padding-top:9px}
+.pays{display:flex;gap:6px;padding:0 15px 12px}
+.pay{flex:1;padding:8px;border:1.5px solid var(--line);font-size:13.5px;border-radius:2px;background:var(--enamel)}
+.pay.on{background:var(--green);color:var(--enamel);border-color:var(--green);font-weight:700}
+.settle{width:100%;padding:14px;background:var(--oxblood);color:var(--enamel);font-weight:700;font-size:15.5px;letter-spacing:.02em}
+.settle:hover{background:#73241d}
+.settle:disabled{background:var(--wall-deep);color:var(--green-soft);cursor:not-allowed}
+
+/* tables */
+.tbl{background:var(--paper);border:1px solid var(--line)}
+.tbl th{
+  text-align:left;padding:11px 15px;font-size:12.5px;letter-spacing:.06em;font-weight:700;
+  background:var(--enamel);border-bottom:1.5px solid var(--ink);
+}
+.tbl td{padding:12px 15px;border-bottom:1px solid var(--line);font-size:14.5px;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tr:hover td{background:rgba(31,68,51,.035)}
+.right{text-align:right}
+.tag{display:inline-block;padding:2px 9px;font-size:12px;border-radius:2px;font-weight:700}
+.tag.ok{background:rgba(31,68,51,.14);color:var(--green)}
+.tag.low{background:rgba(140,47,38,.14);color:var(--oxblood)}
+.tag.leave{background:rgba(168,120,31,.18);color:var(--brass)}
+.bar{height:7px;background:var(--wall-deep);border-radius:1px;overflow:hidden;min-width:92px}
+.bar i{display:block;height:100%;background:var(--green)}
+.bar i.low{background:var(--oxblood)}
+.mini{padding:6px 12px;border:1.5px solid var(--green);color:var(--green);font-size:13px;font-weight:700;border-radius:2px}
+.mini:hover{background:var(--green);color:var(--enamel)}
+.mini.off{border-color:var(--line);color:var(--green-soft);font-weight:400}
+
+/* kpi + reports */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:22px}
+.kpi{background:var(--enamel);border:1px solid var(--line);padding:16px 18px;border-left:4px solid var(--green)}
+.kpi span{font-size:13px;color:var(--green-soft);display:block}
+.kpi b{font-family:var(--serif);font-size:31px;font-weight:600;line-height:1.15;display:block}
+.kpi.alert{border-left-color:var(--oxblood)}
+.two{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start}
+.card{background:var(--paper);border:1px solid var(--line);padding:18px}
+.card h3{margin:0 0 14px;font-size:15px;font-weight:700}
+.legend{display:flex;flex-direction:column;gap:8px;font-size:14px;margin-top:12px}
+.legend div{display:flex;align-items:center;gap:9px}
+.dot{width:11px;height:11px;border-radius:50%;flex:0 0 auto}
+.rank{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.rank:last-child{border-bottom:0}
+
+/* shift chart */
+.shifts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+.shift{background:var(--enamel);border:1px solid var(--line);padding:14px 16px}
+.shift h4{margin:0 0 3px;font-size:14.5px;font-weight:700}
+.shift time{font-size:12.5px;color:var(--green-soft);display:block;margin-bottom:9px}
+.shift ul{margin:0;padding-left:17px;font-size:14px}
+.shift li{margin-bottom:3px}
+
+/* receipt */
+.modal{position:fixed;inset:0;background:rgba(22,40,31,.72);display:grid;place-items:center;padding:20px;z-index:70;overflow:auto}
+.receipt{
+  background:#fff;width:min(340px,100%);padding:24px 22px;
+  font-family:var(--sans);border:1px solid var(--ink);
+}
+.receipt .rc-h{text-align:center;border-bottom:1px dashed #999;padding-bottom:12px;margin-bottom:12px}
+.receipt .rc-h b{font-family:var(--serif);font-size:23px;display:block;font-weight:600}
+.receipt .rc-h span{font-size:11.5px;color:#555;display:block;line-height:1.5}
+.receipt .rc-meta{font-size:12px;color:#555;display:flex;justify-content:space-between}
+.receipt table{margin:12px 0;font-size:13px}
+.receipt td{padding:3px 0}
+.receipt .rc-t{border-top:1px dashed #999;padding-top:10px;font-size:13px}
+.receipt .rc-t div{display:flex;justify-content:space-between;padding:2px 0}
+.receipt .rc-t .g{font-weight:700;font-size:17px;border-top:1px solid #333;margin-top:7px;padding-top:8px}
+.receipt .rc-f{text-align:center;font-size:11.5px;color:#555;margin-top:14px;border-top:1px dashed #999;padding-top:11px}
+.rc-btns{display:flex;gap:9px;margin-top:16px}
+.rc-btns button{flex:1;padding:11px;font-weight:700;font-size:14px;border-radius:2px}
+.rc-print{background:var(--green);color:var(--enamel)}
+.rc-close{border:1.5px solid var(--ink)}
+
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--enamel);padding:11px 22px;font-size:14.5px;z-index:90;
+  border-left:4px solid var(--brass-lt);
+}
+
+@media (max-width:1000px){
+  .counter{grid-template-columns:1fr}
+  .bill{position:static}
+  .two{grid-template-columns:1fr}
+  .swap{grid-template-columns:1fr}
+  .swap-head.b,.swap-cell.b{border-left:0}
+  .facts-in{grid-template-columns:repeat(2,1fr)}
+  .shifts{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:1fr}
+  .side{flex-direction:column}
+  .nav{flex-direction:row;overflow:auto}
+  .side-foot{padding-top:8px}
+}
+@media print{
+  body *{visibility:hidden}
+  .modal,.modal *{visibility:visible}
+  .modal{position:absolute;inset:0;background:#fff;display:block;padding:0}
+  .receipt{border:0;width:auto;box-shadow:none}
+  .rc-btns{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ INTRO PAGE ============ -->
+<main id="intro" class="wall">
+  <section class="hero">
+    <div class="sign">
+      <h1>Irani Café</h1>
+      <p class="estd">EST. 1953 &nbsp;·&nbsp; CAMP, PUNE</p>
+      <div class="rule"></div>
+    </div>
+
+    <p class="lede">The counter, the stock book and the staff register, on one screen.</p>
+    <p class="sub">Chai goes out in ninety seconds. The bill, the stock count and the shift record should keep up. This system replaces the four paper registers the café runs on today.</p>
+
+    <div class="cta-row">
+      <button class="btn btn-solid" id="go-counter">Open the counter</button>
+      <button class="btn btn-line" id="go-staff">See the staff register</button>
+    </div>
+  </section>
+
+  <div class="tiles" aria-hidden="true"></div>
+
+  <section class="compare">
+    <div class="compare-in">
+      <h2>What the owner told us, and what changes</h2>
+      <p class="note">From our field visit and interview with the café manager. Every row on the right is a screen in the system.</p>
+      <div class="swap">
+        <div class="swap-head">On paper today</div>
+        <div class="swap-head b">In the system</div>
+
+        <div class="swap-cell a"><span class="quote">"We write everything in a register — name, phone, joining date, work role."</span><span class="who">Manager, on staff records</span></div>
+        <div class="swap-cell b">Staff register holds the same fields, searchable, with no second copy to keep.</div>
+
+        <div class="swap-cell a"><span class="quote">"Attendance is marked on paper, but sometimes staff forget to sign."</span><span class="who">Manager, on attendance</span></div>
+        <div class="swap-cell b">One tap marks a shift. The month sheet totals itself.</div>
+
+        <div class="swap-cell a"><span class="quote">"We divide morning, afternoon and evening shifts manually."</span><span class="who">Manager, on rostering</span></div>
+        <div class="swap-cell b">Shift chart shows who is on the floor, per shift, per day.</div>
+
+        <div class="swap-cell a"><span class="quote">"If someone takes extra leave it is cut manually. Overtime is added by hand."</span><span class="who">Manager, on payroll</span></div>
+        <div class="swap-cell b">Salary is computed from days present and overtime hours. No arithmetic by hand.</div>
+
+        <div class="swap-cell a"><span class="quote">"Sometimes mistakes happen in attendance or salary."</span><span class="who">Manager, on errors</span></div>
+        <div class="swap-cell b">Bills carry GST and a bill number. Stock falls as items are sold, and flags before it runs out.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="facts">
+    <div class="facts-in">
+      <div class="fact"><b>4</b><span>paper registers replaced</span></div>
+      <div class="fact"><b>5%</b><span>GST applied on every bill</span></div>
+      <div class="fact"><b>3</b><span>shifts rostered daily</span></div>
+      <div class="fact"><b>6</b><span>staff on the payroll</span></div>
+    </div>
+  </section>
+
+  <section class="mods">
+    <div class="mods-in">
+      <h2>Five modules</h2>
+      <div class="mod-grid">
+        <div class="mod"><h3>Counter</h3><p>Take the order, add items, settle the bill by cash or UPI.</p></div>
+        <div class="mod"><h3>Bills</h3><p>Every bill of the day, reopenable and printable.</p></div>
+        <div class="mod"><h3>Stock</h3><p>Milk, tea, bun, kheema. Falls as orders are billed.</p></div>
+        <div class="mod"><h3>Staff register</h3><p>Records, shifts, attendance and monthly salary.</p></div>
+        <div class="mod"><h3>Reports</h3><p>Day and week sales, top items, payment split.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div class="colophon-in">
+      <div>
+        <strong>Nowrosjee Wadia College, Pune (Autonomous)</strong><br>
+        Department of Computer Science · S.Y.B.Sc. (Computer Science) NEP 2.0<br>
+        NCSFP238 — Field Project, Semester III · A.Y. 2025–2026
+      </div>
+      <div>
+        <strong>Group members</strong><br>
+        Prem Jadhav (65)<br>
+        Vedant Jagnade (66)<br>
+        Yoshita Thorat (71)
+      </div>
+    </div>
+  </footer>
+</main>
+
+<!-- ============ SIGN IN ============ -->
+<div class="gate" id="gate" hidden>
+  <div class="gate-card">
+    <h2>Sign in</h2>
+    <p class="hint">Only the manager and the cashier can open the counter.</p>
+    <p class="gate-err" id="gate-err" hidden></p>
+    <label class="field"><span>Role</span>
+      <select id="gate-role">
+        <option value="Manager">Manager</option>
+        <option value="Cashier">Cashier</option>
+      </select>
+    </label>
+    <label class="field"><span>Staff ID</span><input id="gate-id" value="EMP-01"></label>
+    <label class="field"><span>Password</span><input id="gate-pw" type="password" value="cafe123"></label>
+    <div class="cta-row" style="justify-content:stretch">
+      <button class="btn btn-solid" id="gate-in" style="flex:1">Sign in</button>
+      <button class="btn btn-line" id="gate-back">Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div class="app" id="app" hidden>
+  <aside class="side">
+    <div class="side-brand">
+      <b>Irani Café</b>
+      <span>MANAGEMENT SYSTEM</span>
+    </div>
+    <nav class="nav" id="nav">
+      <button data-v="counter" class="on">Counter</button>
+      <button data-v="bills">Bills</button>
+      <button data-v="stock">Stock</button>
+      <button data-v="staff">Staff register</button>
+      <button data-v="reports">Reports</button>
+    </nav>
+    <div class="side-foot">
+      Demo data, no server.<br>
+      Refreshing the page resets it.<br><br>
+      <button id="back-intro">← Intro page</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h2 id="view-title">Counter</h2>
+      <div class="who-chip">
+        <span id="clock" class="tnum"></span>
+        <div class="avatar" id="who-av">M</div>
+        <span id="who-name">Manager · EMP-01</span>
+      </div>
+    </div>
+    <div class="view" id="view"></div>
+  </div>
+</div>
+
+<script>
+/* =================== data =================== */
+var CAFE = { name:"Irani Café", line1:"Camp, Pune 411001", line2:"GSTIN 27ABCDE1234F1Z5 · Ph 020-2634 1953" };
+
+var MENU = [
+  {id:"chai",  name:"Irani Chai",        cat:"Chai & drinks", price:20,  uses:{milk:.14, tea:.008, sugar:.018}},
+  {id:"spchai",name:"Special Chai",      cat:"Chai & drinks", price:30,  uses:{milk:.18, tea:.010, sugar:.020}},
+  {id:"coffee",name:"Cold Coffee",       cat:"Chai & drinks", price:80,  uses:{milk:.20, sugar:.030}},
+  {id:"lassi", name:"Sweet Lassi",       cat:"Chai & drinks", price:60,  uses:{milk:.25, sugar:.030}},
+  {id:"bun",   name:"Bun Maska",         cat:"Bakery",        price:35,  uses:{bun:1, butter:.020}},
+  {id:"brun",  name:"Brun Maska",        cat:"Bakery",        price:40,  uses:{brun:1, butter:.022}},
+  {id:"osm",   name:"Osmania Biscuit ×4",cat:"Bakery",        price:30,  uses:{}},
+  {id:"mawa",  name:"Mawa Cake",         cat:"Bakery",        price:45,  uses:{}},
+  {id:"puff",  name:"Chicken Puff",      cat:"Bakery",        price:50,  uses:{}},
+  {id:"kheema",name:"Kheema Pav",        cat:"Kitchen",       price:110, uses:{kheema:.12, pav:2}},
+  {id:"bhurji",name:"Egg Bhurji Pav",    cat:"Kitchen",       price:90,  uses:{egg:3, pav:2, butter:.010}},
+  {id:"akuri", name:"Akuri on Toast",    cat:"Kitchen",       price:120, uses:{egg:3, butter:.015}},
+  {id:"samosa",name:"Mutton Samosa ×2",  cat:"Kitchen",       price:60,  uses:{}},
+  {id:"cust",  name:"Caramel Custard",   cat:"Sweets",        price:70,  uses:{milk:.15, egg:1, sugar:.030}}
+];
+
+var STOCK = [
+  {id:"milk",   name:"Milk",        unit:"L",   qty:38,  full:60,  min:15, step:20},
+  {id:"tea",    name:"Tea leaves",  unit:"kg",  qty:2.4, full:6,   min:1.5,step:2},
+  {id:"sugar",  name:"Sugar",       unit:"kg",  qty:9,   full:25,  min:5,  step:10},
+  {id:"butter", name:"Amul butter", unit:"kg",  qty:1.8, full:5,   min:2,  step:2},
+  {id:"bun",    name:"Bun",         unit:"pcs", qty:62,  full:200, min:60, step:100},
+  {id:"brun",   name:"Brun",        unit:"pcs", qty:34,  full:120, min:40, step:60},
+  {id:"pav",    name:"Pav",         unit:"pcs", qty:96,  full:240, min:60, step:120},
+  {id:"egg",    name:"Eggs",        unit:"pcs", qty:88,  full:180, min:60, step:90},
+  {id:"kheema", name:"Mutton kheema",unit:"kg", qty:3.2, full:8,   min:2,  step:4}
+];
+
+var STAFF = [
+  {id:"EMP-01", name:"Rustom Irani",      role:"Manager",    shift:"Morning",   phone:"98220 41953", joined:"12 Mar 2011", base:32000, days:25, ot:0,  present:true},
+  {id:"EMP-02", name:"Farhad Batliwala",  role:"Head cook",  shift:"Morning",   phone:"98600 22417", joined:"04 Jul 2015", base:28000, days:24, ot:9,  present:true},
+  {id:"EMP-03", name:"Meera Pawar",       role:"Cashier",    shift:"Afternoon", phone:"90280 71134", joined:"19 Jan 2021", base:19000, days:26, ot:4,  present:true},
+  {id:"EMP-04", name:"Sanjay Kadam",      role:"Waiter",     shift:"Afternoon", phone:"77098 33260", joined:"02 Sep 2019", base:16000, days:23, ot:6,  present:false},
+  {id:"EMP-05", name:"Imran Shaikh",      role:"Waiter",     shift:"Evening",   phone:"96570 88012", joined:"15 Nov 2022", base:16000, days:26, ot:12, present:true},
+  {id:"EMP-06", name:"Babu Sonawane",     role:"Cleaner",    shift:"Evening",   phone:"88888 45120", joined:"28 Feb 2018", base:12000, days:22, ot:0,  present:false}
+];
+
+var SEED = [
+  {t:"07:48", mode:"Cash", items:[["chai",2],["bun",2]]},
+  {t:"08:05", mode:"UPI",  items:[["chai",1],["brun",1],["osm",1]]},
+  {t:"08:31", mode:"Cash", items:[["spchai",2],["mawa",2]]},
+  {t:"09:02", mode:"UPI",  items:[["kheema",1],["chai",2]]},
+  {t:"09:40", mode:"Cash", items:[["chai",4],["bun",4]]},
+  {t:"10:15", mode:"UPI",  items:[["bhurji",2],["chai",2],["brun",2]]},
+  {t:"10:52", mode:"Cash", items:[["chai",3],["samosa",1]]},
+  {t:"11:20", mode:"UPI",  items:[["akuri",1],["coffee",1]]},
+  {t:"11:47", mode:"Cash", items:[["chai",2],["puff",2],["mawa",1]]},
+  {t:"12:18", mode:"UPI",  items:[["kheema",2],["lassi",2],["chai",2]]},
+  {t:"12:55", mode:"Cash", items:[["chai",6],["bun",6]]},
+  {t:"13:26", mode:"UPI",  items:[["cust",2],["spchai",2]]}
+];
+
+var WEEK_PAST = [14280, 15840, 12960, 17420, 21360, 26810]; /* Mon–Sat */
+var DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+var GST = 0.05;
+var WORK_DAYS = 26;
+
+var bills = [];
+var billSeq = 142;
+var cart = [];
+var payMode = "Cash";
+var currentView = "counter";
+var activeCat = "All";
+var search = "";
+var user = { role:"Manager", id:"EMP-01" };
+
+/* =================== helpers =================== */
+function $(s){ return document.querySelector(s); }
+function money(n){ return "₹" + Math.round(n).toLocaleString("en-IN"); }
+function money2(n){ return "₹" + n.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function dish(id){ for(var i=0;i<MENU.length;i++){ if(MENU[i].id===id) return MENU[i]; } return null; }
+function stockItem(id){ for(var i=0;i<STOCK.length;i++){ if(STOCK[i].id===id) return STOCK[i]; } return null; }
+function totalOf(items){
+  var t=0; items.forEach(function(l){ var d=dish(l.id); if(d) t += d.price*l.qty; }); return t;
+}
+function billTotal(b){ var s=totalOf(b.items); return s + s*GST; }
+function todayRevenue(){ var t=0; bills.forEach(function(b){ t += billTotal(b); }); return t; }
+function lowCount(){ var n=0; STOCK.forEach(function(s){ if(s.qty <= s.min) n++; }); return n; }
+
+function seedBills(){
+  SEED.forEach(function(o){
+    billSeq++;
+    bills.push({
+      no:"IC/26-27/" + String(billSeq).padStart(4,"0"),
+      time:o.t, mode:o.mode,
+      items:o.items.map(function(p){ return {id:p[0], qty:p[1]}; })
+    });
+  });
+}
+
+function toast(msg){
+  var old = document.querySelector(".toast");
+  if(old) old.remove();
+  var el = document.createElement("div");
+  el.className = "toast";
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function(){ if(el.parentNode) el.remove(); }, 2600);
+}
+
+function tickClock(){
+  var d = new Date();
+  var opts = {weekday:"short", day:"2-digit", month:"short"};
+  var t = d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true});
+  var c = $("#clock");
+  if(c) c.textContent = d.toLocaleDateString("en-IN",opts) + " · " + t;
+}
+
+/* =================== salary =================== */
+function salary(s){
+  var perDay = s.base / WORK_DAYS;
+  var earned = perDay * s.days;
+  var otPay  = s.ot * (perDay/8) * 1.5;
+  var cut    = perDay * (WORK_DAYS - s.days);
+  return { perDay:perDay, earned:earned, otPay:otPay, cut:cut, net:earned + otPay };
+}
+
+/* =================== views =================== */
+function render(){
+  var v = $("#view");
+  $("#view-title").textContent = ({counter:"Counter", bills:"Bills", stock:"Stock", staff:"Staff register", reports:"Reports"})[currentView];
+  if(currentView==="counter") v.innerHTML = viewCounter();
+  if(currentView==="bills")   v.innerHTML = viewBills();
+  if(currentView==="stock")   v.innerHTML = viewStock();
+  if(currentView==="staff")   v.innerHTML = viewStaff();
+  if(currentView==="reports") v.innerHTML = viewReports();
+  if(currentView==="reports") drawCharts();
+}
+
+/* ---- counter ---- */
+function viewCounter(){
+  var cats = ["All"];
+  MENU.forEach(function(m){ if(cats.indexOf(m.cat)<0) cats.push(m.cat); });
+
+  var list = MENU.filter(function(m){
+    var okCat = (activeCat==="All" || m.cat===activeCat);
+    var okQ = !search || m.name.toLowerCase().indexOf(search.toLowerCase())>=0;
+    return okCat && okQ;
+  });
+
+  var grid = list.map(function(m){
+    return '<button class="dish" data-add="'+m.id+'">'+
+             '<b>'+esc(m.name)+'</b><span>'+esc(m.cat)+'</span><em>'+money(m.price)+'</em>'+
+           '</button>';
+  }).join("") || '<p class="empty">No item matches that name. Clear the search to see the full menu.</p>';
+
+  var sub = totalOf(cart);
+  var tax = sub*GST;
+
+  var lines = cart.length ? cart.map(function(l){
+    var d = dish(l.id);
+    return '<div class="line">'+
+      '<div><b>'+esc(d.name)+'</b><small>'+money(d.price)+' each</small></div>'+
+      '<div class="qty"><button data-dec="'+l.id+'" aria-label="One less '+esc(d.name)+'">−</button>'+
+        '<span class="tnum">'+l.qty+'</span>'+
+        '<button data-inc="'+l.id+'" aria-label="One more '+esc(d.name)+'">+</button></div>'+
+      '<div class="line-amt tnum">'+money(d.price*l.qty)+'</div>'+
+    '</div>';
+  }).join("") : '<p class="empty">Tap a menu item to start the order.</p>';
+
+  return ''+
+  '<div class="counter">'+
+    '<section class="panel">'+
+      '<div class="panel-h"><h3>Menu</h3>'+
+        '<input class="search" id="menu-search" placeholder="Search the menu" value="'+esc(search)+'">'+
+      '</div>'+
+      '<div class="cats">'+ cats.map(function(c){
+          return '<button class="cat'+(c===activeCat?" on":"")+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>';
+        }).join("") +'</div>'+
+      '<div class="menu-grid">'+grid+'</div>'+
+    '</section>'+
+
+    '<aside class="bill">'+
+      '<div class="bill-h"><span>Table order</span><span class="tnum">IC/26-27/'+String(billSeq+1).padStart(4,"0")+'</span></div>'+
+      '<div class="bill-lines">'+lines+'</div>'+
+      '<div class="totals tnum">'+
+        '<div><span>Subtotal</span><span>'+money2(sub)+'</span></div>'+
+        '<div><span>CGST 2.5%</span><span>'+money2(tax/2)+'</span></div>'+
+        '<div><span>SGST 2.5%</span><span>'+money2(tax/2)+'</span></div>'+
+        '<div class="grand"><span>Total</span><span>'+money(sub+tax)+'</span></div>'+
+      '</div>'+
+      '<div class="pays">'+
+        ["Cash","UPI","Card"].map(function(p){
+          return '<button class="pay'+(p===payMode?" on":"")+'" data-pay="'+p+'">'+p+'</button>';
+        }).join("")+
+      '</div>'+
+      '<button class="settle" id="settle"'+(cart.length?"":" disabled")+'>Settle bill</button>'+
+    '</aside>'+
+  '</div>';
+}
+
+/* ---- bills ---- */
+function viewBills(){
+  var rows = bills.slice().reverse().map(function(b){
+    var n = b.items.reduce(function(a,l){ return a+l.qty; },0);
+    return '<tr>'+
+      '<td class="tnum">'+b.no+'</td>'+
+      '<td class="tnum">'+b.time+'</td>'+
+      '<td>'+b.items.map(function(l){ var d=dish(l.id); return esc(d.name)+" ×"+l.qty; }).join(", ")+'</td>'+
+      '<td class="tnum">'+n+'</td>'+
+      '<td><span class="tag ok">'+b.mode+'</span></td>'+
+      '<td class="right tnum">'+money(billTotal(b))+'</td>'+
+      '<td class="right"><button class="mini" data-open="'+b.no+'">Open</button></td>'+
+    '</tr>';
+  }).join("");
+
+  return ''+
+  '<div class="kpis">'+
+    '<div class="kpi"><span>Bills today</span><b class="tnum">'+bills.length+'</b></div>'+
+    '<div class="kpi"><span>Collected today</span><b class="tnum">'+money(todayRevenue())+'</b></div>'+
+    '<div class="kpi"><span>Average bill</span><b class="tnum">'+money(bills.length?todayRevenue()/bills.length:0)+'</b></div>'+
+  '</div>'+
+  '<div class="tbl"><table><thead><tr>'+
+    '<th>Bill no.</th><th>Time</th><th>Items</th><th>Qty</th><th>Paid by</th><th class="right">Amount</th><th></th>'+
+  '</tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+
+/* ---- stock ---- */
+function viewStock(){
+  var rows = STOCK.map(function(s){
+    var pct = Math.max(2, Math.min(100, (s.qty/s.full)*100));
+    var low = s.qty <= s.min;
+    var q = (Math.round(s.qty*100)/100);
+    return '<tr>'+
+      '<td><b>'+esc(s.name)+'</b></td>'+
+      '<td class="tnum">'+q+' '+s.unit+'</td>'+
+      '<td><div class="bar"><i class="'+(low?"low":"")+'" style="width:'+pct+'%"></i></div></td>'+
+      '<td class="tnum">'+s.min+' '+s.unit+'</td>'+
+      '<td>'+(low?'<span class="tag low">Reorder</span>':'<span class="tag ok">In stock</span>')+'</td>'+
+      '<td class="right"><button class="mini" data-restock="'+s.id+'">Add '+s.step+' '+s.unit+'</button></td>'+
+    '</tr>';
+  }).join("");
+
+  return ''+
+  '<div class="kpis">'+
+    '<div class="kpi"><span>Items tracked</span><b class="tnum">'+STOCK.length+'</b></div>'+
+    '<div class="kpi '+(lowCount()?"alert":"")+'"><span>Below reorder level</span><b class="tnum">'+lowCount()+'</b></div>'+
+    '<div class="kpi"><span>Last updated</span><b style="font-size:20px">On every bill</b></div>'+
+  '</div>'+
+  '<div class="tbl"><table><thead><tr>'+
+    '<th>Item</th><th>In hand</th><th>Level</th><th>Reorder at</th><th>Status</th><th class="right">Action</th>'+
+  '</tr></thead><tbody>'+rows+'</tbody></table></div>'+
+  '<p style="font-size:14px;color:var(--green-soft);margin-top:14px">Stock falls automatically when a bill is settled at the counter. Settle a chai and watch milk drop.</p>';
+}
+
+/* ---- staff ---- */
+function viewStaff(){
+  var shifts = ["Morning","Afternoon","Evening"];
+  var times = {Morning:"6:00 am – 2:00 pm", Afternoon:"2:00 pm – 8:00 pm", Evening:"4:00 pm – 11:30 pm"};
+
+  var chart = shifts.map(function(sh){
+    var who = STAFF.filter(function(s){ return s.shift===sh; })
+      .map(function(s){ return '<li>'+esc(s.name)+' <span style="color:var(--green-soft)">· '+esc(s.role)+'</span></li>'; }).join("");
+    return '<div class="shift"><h4>'+sh+'</h4><time>'+times[sh]+'</time><ul>'+who+'</ul></div>';
+  }).join("");
+
+  var payroll = 0;
+  var rows = STAFF.map(function(s){
+    var pay = salary(s);
+    payroll += pay.net;
+    var initials = s.name.split(" ").map(function(w){ return w[0]; }).join("").slice(0,2);
+    return '<tr>'+
+      '<td><div style="display:flex;align-items:center;gap:11px">'+
+        '<div class="avatar">'+initials+'</div>'+
+        '<div><b>'+esc(s.name)+'</b><br><small style="color:var(--green-soft)">'+s.id+' · joined '+s.joined+'</small></div>'+
+      '</div></td>'+
+      '<td>'+esc(s.role)+'</td>'+
+      '<td>'+s.shift+'</td>'+
+      '<td class="tnum">'+esc(s.phone)+'</td>'+
+      '<td class="tnum">'+s.days+' / '+WORK_DAYS+'</td>'+
+      '<td class="tnum">'+s.ot+' h</td>'+
+      '<td class="right tnum"><b>'+money(pay.net)+'</b></td>'+
+      '<td class="right"><button class="mini '+(s.present?"":"off")+'" data-mark="'+s.id+'">'+
+        (s.present?"Present today":"Mark present")+'</button></td>'+
+    '</tr>';
+  }).join("");
+
+  var onFloor = STAFF.filter(function(s){ return s.present; }).length;
+
+  return ''+
+  '<div class="kpis">'+
+    '<div class="kpi"><span>On the payroll</span><b class="tnum">'+STAFF.length+'</b></div>'+
+    '<div class="kpi"><span>Marked present today</span><b class="tnum">'+onFloor+' of '+STAFF.length+'</b></div>'+
+    '<div class="kpi"><span>Salary payable this month</span><b class="tnum">'+money(payroll)+'</b></div>'+
+  '</div>'+
+  '<h3 style="font-family:var(--serif);font-size:20px;font-weight:600;margin:4px 0 12px">Shift chart</h3>'+
+  '<div class="shifts">'+chart+'</div>'+
+  '<div class="tbl"><table><thead><tr>'+
+    '<th>Staff</th><th>Role</th><th>Shift</th><th>Contact</th><th>Days present</th><th>Overtime</th>'+
+    '<th class="right">Net salary</th><th class="right">Attendance</th>'+
+  '</tr></thead><tbody>'+rows+'</tbody></table></div>'+
+  '<p style="font-size:14px;color:var(--green-soft);margin-top:14px">Net salary = (base ÷ 26 × days present) + overtime at 1.5× the hourly rate. Marking someone present adds a day and recomputes the figure.</p>';
+}
+
+/* ---- reports ---- */
+function viewReports(){
+  var counts = {};
+  bills.forEach(function(b){ b.items.forEach(function(l){ counts[l.id] = (counts[l.id]||0) + l.qty; }); });
+  var top = Object.keys(counts).map(function(id){
+    return {name:dish(id).name, qty:counts[id], rev:dish(id).price*counts[id]};
+  }).sort(function(a,b){ return b.rev-a.rev; }).slice(0,5);
+
+  var cash=0, upi=0, card=0;
+  bills.forEach(function(b){
+    var t = billTotal(b);
+    if(b.mode==="Cash") cash+=t; else if(b.mode==="UPI") upi+=t; else card+=t;
+  });
+
+  var week = WEEK_PAST.concat([todayRevenue()]);
+  var weekTotal = week.reduce(function(a,b){ return a+b; },0);
+
+  return ''+
+  '<div class="kpis">'+
+    '<div class="kpi"><span>Bills today</span><b class="tnum">'+bills.length+'</b></div>'+
+    '<div class="kpi"><span>Sales today</span><b class="tnum">'+money(todayRevenue())+'</b></div>'+
+    '<div class="kpi"><span>Sales this week</span><b class="tnum">'+money(weekTotal)+'</b></div>'+
+    '<div class="kpi '+(lowCount()?"alert":"")+'"><span>Items to reorder</span><b class="tnum">'+lowCount()+'</b></div>'+
+  '</div>'+
+  '<div class="two">'+
+    '<div class="card"><h3>Sales this week</h3><svg id="weekchart" viewBox="0 0 620 240" width="100%" height="240" role="img" aria-label="Bar chart of sales for each day this week"></svg></div>'+
+    '<div class="card"><h3>How customers paid today</h3>'+
+      '<svg id="paychart" viewBox="0 0 160 160" width="160" height="160" style="display:block;margin:0 auto"></svg>'+
+      '<div class="legend">'+
+        '<div><i class="dot" style="background:#1f4433"></i> Cash <b class="tnum" style="margin-left:auto">'+money(cash)+'</b></div>'+
+        '<div><i class="dot" style="background:#a8781f"></i> UPI <b class="tnum" style="margin-left:auto">'+money(upi)+'</b></div>'+
+        '<div><i class="dot" style="background:#8c2f26"></i> Card <b class="tnum" style="margin-left:auto">'+money(card)+'</b></div>'+
+      '</div>'+
+    '</div>'+
+  '</div>'+
+  '<div class="card" style="margin-top:18px"><h3>Top sellers today</h3>'+
+    top.map(function(t){
+      return '<div class="rank"><span>'+esc(t.name)+' <span style="color:var(--green-soft)">×'+t.qty+'</span></span><b class="tnum">'+money(t.rev)+'</b></div>';
+    }).join("")+
+  '</div>';
+}
+
+function drawCharts(){
+  var week = WEEK_PAST.concat([todayRevenue()]);
+  var max = Math.max.apply(null, week) * 1.15;
+  var svg = $("#weekchart");
+  if(svg){
+    var W=620, H=240, pad=34, bw=44, gap=(W-pad*2-bw*7)/6, out="";
+    out += '<line x1="'+pad+'" y1="'+(H-30)+'" x2="'+(W-pad)+'" y2="'+(H-30)+'" stroke="#16281f" stroke-width="1.5"/>';
+    week.forEach(function(v,i){
+      var h = Math.max(3, (v/max)*(H-72));
+      var x = pad + i*(bw+gap);
+      var y = (H-30) - h;
+      var today = (i===6);
+      out += '<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+h+'" fill="'+(today?"#a8781f":"#1f4433")+'"/>';
+      out += '<text x="'+(x+bw/2)+'" y="'+(y-8)+'" text-anchor="middle" font-size="12" font-family="Karla,sans-serif" fill="#16281f">'+Math.round(v/1000)+'k</text>';
+      out += '<text x="'+(x+bw/2)+'" y="'+(H-12)+'" text-anchor="middle" font-size="12.5" font-family="Karla,sans-serif" fill="'+(today?"#a8781f":"#2f5a45")+'" font-weight="'+(today?"700":"400")+'">'+DAYS[i]+'</text>';
+    });
+    svg.innerHTML = out;
+  }
+
+  var cash=0, upi=0, card=0;
+  bills.forEach(function(b){
+    var t = billTotal(b);
+    if(b.mode==="Cash") cash+=t; else if(b.mode==="UPI") upi+=t; else card+=t;
+  });
+  var tot = cash+upi+card || 1;
+  var pie = $("#paychart");
+  if(pie){
+    var r=54, C=2*Math.PI*r, off=0, o="";
+    [[cash,"#1f4433"],[upi,"#a8781f"],[card,"#8c2f26"]].forEach(function(p){
+      var len = (p[0]/tot)*C;
+      o += '<circle cx="80" cy="80" r="'+r+'" fill="none" stroke="'+p[1]+'" stroke-width="24"'+
+           ' stroke-dasharray="'+len+' '+(C-len)+'" stroke-dashoffset="'+(-off)+'" transform="rotate(-90 80 80)"/>';
+      off += len;
+    });
+    o += '<text x="80" y="76" text-anchor="middle" font-size="13" font-family="Karla,sans-serif" fill="#2f5a45">Today</text>';
+    o += '<text x="80" y="96" text-anchor="middle" font-size="17" font-weight="700" font-family="Karla,sans-serif" fill="#16281f">'+money(tot)+'</text>';
+    pie.innerHTML = o;
+  }
+}
+
+/* =================== cart + billing =================== */
+function addToCart(id){
+  for(var i=0;i<cart.length;i++){ if(cart[i].id===id){ cart[i].qty++; render(); return; } }
+  cart.push({id:id, qty:1});
+  render();
+}
+function changeQty(id, delta){
+  for(var i=0;i<cart.length;i++){
+    if(cart[i].id===id){
+      cart[i].qty += delta;
+      if(cart[i].qty<=0) cart.splice(i,1);
+      break;
+    }
+  }
+  render();
+}
+
+function settle(){
+  if(!cart.length) return;
+  billSeq++;
+  var now = new Date();
+  var bill = {
+    no:"IC/26-27/"+String(billSeq).padStart(4,"0"),
+    time: now.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",hour12:false}),
+    mode: payMode,
+    items: cart.map(function(l){ return {id:l.id, qty:l.qty}; })
+  };
+  bills.push(bill);
+
+  /* consume stock */
+  cart.forEach(function(l){
+    var d = dish(l.id);
+    if(!d) return;
+    Object.keys(d.uses).forEach(function(k){
+      var s = stockItem(k);
+      if(s) s.qty = Math.max(0, Math.round((s.qty - d.uses[k]*l.qty)*1000)/1000);
+    });
+  });
+
+  cart = [];
+  render();
+  showReceipt(bill);
+
+  var low = STOCK.filter(function(s){ return s.qty<=s.min; }).map(function(s){ return s.name; });
+  if(low.length) toast("Below reorder level: " + low.join(", "));
+}
+
+function showReceipt(b){
+  var open = document.querySelector(".modal");
+  if(open) open.remove();
+  var sub = totalOf(b.items), tax = sub*GST;
+  var rows = b.items.map(function(l){
+    var d = dish(l.id);
+    return '<tr><td>'+esc(d.name)+'</td><td class="tnum" style="text-align:center">'+l.qty+'</td>'+
+           '<td class="tnum" style="text-align:right">'+money(d.price*l.qty)+'</td></tr>';
+  }).join("");
+
+  var wrap = document.createElement("div");
+  wrap.className = "modal";
+  wrap.id = "receipt-modal";
+  wrap.innerHTML =
+   '<div class="receipt">'+
+     '<div class="rc-h"><b>'+CAFE.name+'</b><span>'+CAFE.line1+'</span><span>'+CAFE.line2+'</span></div>'+
+     '<div class="rc-meta tnum"><span>'+b.no+'</span><span>'+new Date().toLocaleDateString("en-IN")+' '+b.time+'</span></div>'+
+     '<table><thead><tr>'+
+       '<th style="text-align:left;font-size:11.5px;border-bottom:1px solid #ccc">Item</th>'+
+       '<th style="font-size:11.5px;border-bottom:1px solid #ccc">Qty</th>'+
+       '<th style="text-align:right;font-size:11.5px;border-bottom:1px solid #ccc">Amount</th>'+
+     '</tr></thead><tbody>'+rows+'</tbody></table>'+
+     '<div class="rc-t tnum">'+
+       '<div><span>Subtotal</span><span>'+money2(sub)+'</span></div>'+
+       '<div><span>CGST 2.5%</span><span>'+money2(tax/2)+'</span></div>'+
+       '<div><span>SGST 2.5%</span><span>'+money2(tax/2)+'</span></div>'+
+       '<div class="g"><span>Total</span><span>'+money(sub+tax)+'</span></div>'+
+       '<div style="margin-top:6px"><span>Paid by</span><span>'+b.mode+'</span></div>'+
+       '<div><span>Billed by</span><span>'+user.role+' · '+user.id+'</span></div>'+
+     '</div>'+
+     '<div class="rc-f">Bill generated by the Irani Café Management System.<br>Thank you, come again.</div>'+
+     '<div class="rc-btns">'+
+       '<button class="rc-print" id="rc-print">Print bill</button>'+
+       '<button class="rc-close" id="rc-close">Close</button>'+
+     '</div>'+
+   '</div>';
+  document.body.appendChild(wrap);
+
+  $("#rc-print").onclick = function(){ window.print(); };
+  $("#rc-close").onclick = function(){ wrap.remove(); };
+  wrap.onclick = function(e){ if(e.target===wrap) wrap.remove(); };
+}
+
+/* =================== events =================== */
+function openApp(view){
+  $("#intro").hidden = true;
+  $("#gate").hidden = true;
+  $("#app").hidden = false;
+  currentView = view || "counter";
+  document.querySelectorAll("#nav button").forEach(function(b){
+    b.classList.toggle("on", b.dataset.v===currentView);
+  });
+  window.scrollTo(0,0);
+  render();
+}
+
+var pendingView = "counter";
+
+$("#go-counter").onclick = function(){ pendingView="counter"; $("#gate").hidden=false; $("#gate-pw").focus(); };
+$("#go-staff").onclick   = function(){ pendingView="staff";   $("#gate").hidden=false; $("#gate-pw").focus(); };
+$("#gate-back").onclick  = function(){ $("#gate").hidden=true; };
+
+$("#gate-in").onclick = function(){
+  var pw = $("#gate-pw").value.trim();
+  var id = $("#gate-id").value.trim();
+  var err = $("#gate-err");
+  if(!id){ err.textContent = "Enter a staff ID to sign in."; err.hidden=false; return; }
+  if(!pw){ err.textContent = "Enter the password to sign in."; err.hidden=false; return; }
+  err.hidden = true;
+  user.role = $("#gate-role").value;
+  user.id = id;
+  $("#who-name").textContent = user.role + " · " + user.id;
+  $("#who-av").textContent = user.role[0];
+  openApp(pendingView);
+};
+$("#gate-pw").addEventListener("keydown", function(e){ if(e.key==="Enter") $("#gate-in").click(); });
+
+$("#back-intro").onclick = function(){
+  $("#app").hidden = true;
+  $("#intro").hidden = false;
+  window.scrollTo(0,0);
+};
+
+document.querySelectorAll("#nav button").forEach(function(b){
+  b.onclick = function(){
+    currentView = b.dataset.v;
+    document.querySelectorAll("#nav button").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    render();
+  };
+});
+
+$("#view").addEventListener("click", function(e){
+  var t = e.target.closest("button");
+  if(!t) return;
+  if(t.dataset.add){ addToCart(t.dataset.add); return; }
+  if(t.dataset.inc){ changeQty(t.dataset.inc, 1); return; }
+  if(t.dataset.dec){ changeQty(t.dataset.dec, -1); return; }
+  if(t.dataset.cat){ activeCat = t.dataset.cat; render(); return; }
+  if(t.dataset.pay){ payMode = t.dataset.pay; render(); return; }
+  if(t.id==="settle"){ settle(); return; }
+  if(t.dataset.restock){
+    var s = stockItem(t.dataset.restock);
+    if(s){ s.qty = Math.round((s.qty + s.step)*100)/100; render(); toast(s.name + " restocked by " + s.step + " " + s.unit + "."); }
+    return;
+  }
+  if(t.dataset.mark){
+    STAFF.forEach(function(s){
+      if(s.id===t.dataset.mark){
+        s.present = !s.present;
+        s.days = Math.min(WORK_DAYS, Math.max(0, s.days + (s.present?1:-1)));
+        toast(s.name + (s.present ? " marked present. Salary recalculated." : " marked absent. Salary recalculated."));
+      }
+    });
+    render();
+    return;
+  }
+  if(t.dataset.open){
+    for(var i=0;i<bills.length;i++){ if(bills[i].no===t.dataset.open){ showReceipt(bills[i]); break; } }
+    return;
+  }
+});
+
+$("#view").addEventListener("input", function(e){
+  if(e.target.id==="menu-search"){
+    search = e.target.value;
+    render();
+    var box = $("#menu-search");
+    if(box){ box.focus(); box.setSelectionRange(box.value.length, box.value.length); }
+  }
+});
+
+document.addEventListener("keydown", function(e){
+  if(e.key==="Escape"){
+    var m = document.querySelector(".modal");
+    if(m) m.remove();
+    else if(!$("#gate").hidden) $("#gate").hidden = true;
+  }
+});
+
+/* =================== boot =================== */
+seedBills();
+tickClock();
+setInterval(tickClock, 1000);
+render();
+</script>
+</body>
+</html>
