@@ -385,8 +385,11 @@ class CafeHandler(BaseHTTPRequestHandler):
             return None
 
     # --------------------------------------------------------------------------
-    # GET ROUTER
+    # GET & HEAD ROUTER
     # --------------------------------------------------------------------------
+    def do_HEAD(self):
+        self.do_GET()
+
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path
