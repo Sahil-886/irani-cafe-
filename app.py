@@ -20,8 +20,14 @@ import mimetypes
 
 # Base directory for cross-platform compatibility
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "cafe.db")
-STATIC_HTML_PATH = os.path.join(BASE_DIR, "irani-cafe-system.html")
+
+# On Vercel or serverless environments, write DB to /tmp where filesystem is writable
+if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    DB_PATH = "/tmp/cafe.db"
+else:
+    DB_PATH = os.path.join(BASE_DIR, "cafe.db")
+
+STATIC_HTML_PATH = os.path.join(BASE_DIR, "index.html") if os.path.exists(os.path.join(BASE_DIR, "index.html")) else os.path.join(BASE_DIR, "irani-cafe-system.html")
 
 # In-memory sessions: token -> {user_id, staff_id, role, name, username}
 SESSIONS = {}
